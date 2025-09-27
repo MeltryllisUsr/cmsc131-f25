@@ -6,6 +6,8 @@ public class Account {
     private String accountName;
     private String accountType;
 
+    // TODO add constructor
+
     public String getAccountId() {
         return accountId;
     }
