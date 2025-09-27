@@ -1,3 +1,5 @@
+package projects.bank;
+
 public class Account {
     private String accountId;
     private double balance;
