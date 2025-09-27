@@ -4,19 +4,19 @@ public class Bank {
     private Account[] accounts;
     private int count;
 
-    public class Bank() {
+    public class Bank() {  // TODO remove `class`
         accounts = new Account[100];
         count = 0;
     }
 
     public void addAccount(Account acc) {
-        accounts[count]=acc;
+        accounts[count]=acc;  // TODO handle overflow
         count++;
     }
 
     public Account getAccount(String accountID) {
         for (int i = 0; i <count; i++){
-            if accounts[i].getAccountId().equals(accoundID){
+            if accounts[i].getAccountId().equals(accoundID){  // TODO add parentheses, etc
             return accounts[i];
                 }
             }
