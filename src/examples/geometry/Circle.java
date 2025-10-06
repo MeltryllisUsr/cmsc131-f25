@@ -1,11 +1,14 @@
 package examples.geometry;
 
-public class Circle {
+public class Circle extends Shape {
 
-    private Point center;
-    private double radius;
+    private final Point center;
+    private final double radius;
 
     public Circle(Point c, double r) {
+        if (r <= 0) throw new IllegalArgumentException(
+            "Parameter radius must be positive."
+        );
         center = c;
         radius = r;
     }
