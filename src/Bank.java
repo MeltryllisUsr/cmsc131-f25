@@ -30,11 +30,12 @@ public class Bank {
     public int getCount(){
         return count;
         }
-    public Account getAccountName(){
-        for (int i=0; i<count; i++){
-            if (accounts[i].getAccountName().equals(accountName)){
-                return accounts[i];
+        public Account getAccountByName(String accountName){
+            for (int i = 0; i < count; i++) {
+                if (accounts[i].getAccountName().equals(accountName)) {
+                    return accounts[i];
                 }
             }
+            return null;
         }
-    } 
+    }
