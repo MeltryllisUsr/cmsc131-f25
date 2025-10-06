@@ -1,10 +1,10 @@
 public class Account {
-    private String accountId;
+    private int accountId;
     private double balance;
     private String accountName;
-    private String accountType;
+    private int accountType;
 
-    public String getAccountId() {
+    public int getAccountId() {
         return accountId;
     }
     

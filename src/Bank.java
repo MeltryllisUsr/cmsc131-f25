@@ -2,33 +2,39 @@ public class Bank {
     private Account[] accounts;
     private int count;
 
-    public class Bank() {
+    public Bank() {
         accounts = new Account[100];
         count = 0;
     }
 
     public void addAccount(Account acc) {
-        accounts[count]=acc;
-        count++;
+    if (count == accounts.length) {
+        Account[] biggerArray = new Account[accounts.length * 2];
+        for (int i = 0; i < accounts.length; i++) {
+            biggerArray[i] = accounts[i];
+        }
+        accounts = biggerArray;
     }
+    accounts[count] = acc;
+    count++;
+}
 
-    public Account getAccount(String accountID) {
+    public Account getAccount(int accountID) {
         for (int i = 0; i <count; i++){
-            if accounts[i].getAccountId().equals(accoundID){
+            if (accounts[i].getAccountId()==accountID){
             return accounts[i];
                 }
             }
             return null;
         }
-    public int getCount{
+    public int getCount(){
         return count;
         }
-    public Account getAccountName{
+    public Account getAccountName(){
         for (int i=0; i<count; i++){
-            if accounts[i].getAccountName().equals(accountName){
+            if (accounts[i].getAccountName().equals(accountName)){
                 return accounts[i];
                 }
             }
         }
-    }
-}
+    } 
