@@ -1,3 +1,5 @@
+package projects.bank;
+
 public class Account {
     private int accountId; // TODO should be String
     private double balance;
