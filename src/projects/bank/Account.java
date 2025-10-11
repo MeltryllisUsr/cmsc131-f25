@@ -1,8 +1,10 @@
 public class Account {
-    private int accountId;
+    private int accountId; // TODO should be String
     private double balance;
     private String accountName;
-    private int accountType;
+    private int accountType; // TODO should be String or custom AccountType enum
+
+    // TODO add constructor
 
     public int getAccountId() {
         return accountId;
