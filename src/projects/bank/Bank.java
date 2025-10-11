@@ -7,7 +7,7 @@ public class Bank {
         count = 0;
     }
 
-    public void addAccount(Account acc) {
+    public void addAccount(Account acc) { // TODO should return boolean
     if (count == accounts.length) {
         Account[] biggerArray = new Account[accounts.length * 2];
         for (int i = 0; i < accounts.length; i++) {
@@ -19,7 +19,7 @@ public class Bank {
     count++;
 }
 
-    public Account getAccount(int accountID) {
+    public Account getAccount(int accountID) { // TODO should return int
         for (int i = 0; i <count; i++){
             if (accounts[i].getAccountId()==accountID){
             return accounts[i];
