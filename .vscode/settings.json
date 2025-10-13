@@ -7,5 +7,8 @@
         "src", 
         "test"
     ],
-    "editor.rulers": [80]
+    "editor.rulers": [
+        80
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }
