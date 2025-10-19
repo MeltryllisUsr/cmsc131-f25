@@ -1,8 +1,7 @@
+package projects.bank;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
-import projects.bank.Account;
-import projects.bank.Bank;
 
 public class BankTest {
 
@@ -23,12 +22,23 @@ public class BankTest {
         } catch (Exception e){
             fail("Exception thrown: " + e.getMessage());
         }
-        assertEquals(1, bank.getCount());
+        
+        assertEquals(1+4, bank.getCount());
+        
         Account loadedAcc = bank.getAccountByName("Lorenzo");
         assertNotNull(loadedAcc);
         assertEquals("xf123", loadedAcc.getAccountId());
         assertEquals(1000.0, loadedAcc.getBalance(), 1e-9);
+
+        // TODO test loaded account has expected attributers
         }
+
+    // TODO add tests for
+    // loadAccounts preserves data
+    // loadAccounts returns true on succeed
+    // writeAccounts failure mode
+    // writeAccounts preserves data
+    // writeAccounts returns true on succeed
 
 
    

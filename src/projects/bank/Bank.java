@@ -47,20 +47,27 @@ public class Bank {
             }
             return null;
         }
+
+    // TODO javadoc
+    // TODO use try-catch so this method does not throw
+    // TODO return boolean
     public void loadAccounts(String filename) throws FileNotFoundException {
-    Scanner input = new Scanner(new File(filename));
-    while (input.hasNextLine()) {
-        String line = input.nextLine();
-        Account acc = Account.fromCSV(line);
-        addAccount(acc);
+        Scanner input = new Scanner(new File(filename));
+        while (input.hasNextLine()) {
+            String line = input.nextLine();
+            Account acc = Account.fromCSV(line);
+            addAccount(acc);
+        }
+        input.close();
     }
-    input.close();
-}
+
+    // TODO javadoc
     public boolean writeAccounts(String filename){
         boolean result = true;
-        File file = new File(filename);
+        File file = new File(filename); // BUG: this is never used
         FileWriter writer = null;
         try {
+            // TODO initialize writer from file
             for (int i = 0; i <accounts.length; i++){
                 Account acc = accounts[i];
                 writer.write(acc.getAccountId() + "," + acc.getAccountName() + "," + acc.getBalance() + "," + acc.getAccountType() + "\n");

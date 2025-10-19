@@ -4,8 +4,9 @@ public class Account {
     private String accountId; 
     private double balance;
     private String accountName;
-    private String accountType; 
+    private String accountType; // consider using enum
 
+    // TODO javadoc
     public Account(String accountType, String accountId, String accountName, double balance){
         this.accountType = accountType;
         this.accountId = accountId;
@@ -13,7 +14,9 @@ public class Account {
         this.balance = balance;
     }
 
+    // TODO javadoc
     public static Account fromCSV(String csv) {
+        // TODO validate csv
         String[] parts = csv.split(",");
         String accountType = parts[0];
         String accountId = parts[1];
@@ -22,6 +25,8 @@ public class Account {
         return new Account(accountType, accountId, accountName, balance);
     }
 
+    // TODO
+    // public String toCSV() {}
 
     public String getAccountId() {
         return accountId;

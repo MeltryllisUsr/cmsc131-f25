@@ -1,6 +1,7 @@
+package projects.bank;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import projects.bank.Account;
 
 public class AccountTest {
 
@@ -23,5 +24,9 @@ public class AccountTest {
     public void testFromCSV_invalidBalanceThrows() {
         assertThrows(NumberFormatException.class, () -> Account.fromCSV("savings,AC456,Alice,notanumber"));
     }
+
+    // TODO add tests for 
+    // static factory throws on null input
+    // toCSV output is correct
 
 }
