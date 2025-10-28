@@ -8,14 +8,14 @@ public class BankTest {
     @Test
     public void testAddAccount() {
         Bank bank = new Bank();
-        Account acc = new Account("checking", "xf123", "Lorenzo", 1000.0);
+        Account acc = new CheckingAccount("xf123", "Lorenzo", 1000.0);
         assertTrue(bank.addAccount(acc));
         assertEquals(1, bank.getCount());
     }
     @Test
     public void testLoadAccount(){
         Bank bank = new Bank();
-        Account acc = new Account("checking", "xf123", "Lorenzo", 1000.0);
+        Account acc = new CheckingAccount("xf123", "Lorenzo", 1000.0);
         bank.addAccount(acc);
         try{
             bank.loadAccounts("data/testAccounts.csv");
