@@ -1,3 +1,14 @@
+/** TODO list
+ * 
+ * Make TransactionType enum and use it in create method instead of Strings. Once you use an enum you can change the switch statement to an if-else and drop the default case.
+ * 
+ * Move logic that amount > 0 into Transaction constructor.
+ * 
+ * Comment (not TODO): Your create method doesn't directly validate that inputLine != null, but your split command will throw if inputLine == null, so that's okay.
+ * 
+ * 
+ * 
+ */
 package projects.bank;
 
 abstract class Transaction {
