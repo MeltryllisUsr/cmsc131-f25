@@ -3,7 +3,7 @@ package projects.bank;
 public class SavingsAccount extends Account {
 
     public SavingsAccount(String id, String ownerName, double balance) {
-        super(AccountType.SAVINGS, id, ownerName, balance);
+        super(id, ownerName, balance);
     }
 
     @Override
