@@ -1,3 +1,12 @@
+/** TODO list
+ * 
+ * The writeAccount method unnecessarily duplicates acc.toCSV().
+ * 
+ * What's up with the "this s your teacher's provided code" comment? I'm interested to know which tutor you've been working with! Please let me know.
+ * 
+ * In processTransactions, you don't have to check for trs being null if you can guarantee that Tranaction.create never returns null. Same goes for getAccount. The account you're searching for could indeed be absent, It's easier to look up the *index* of an Account and return -1 if an account is absent. Then you don't have to return null.
+ * 
+ */
 package projects.bank;
 
 import java.io.File;
@@ -83,7 +92,7 @@ public class Bank {
             writer = new FileWriter(file);
             for (int i = 0; i <accounts.length; i++){
                 Account acc = accounts[i];
-                writer.write(acc.getAccountType() + "," + acc.getAccountId() + "," + acc.getAccountName() + "," + acc.getBalance() + "\n");
+                writer.write(acc.getType() + "," + acc.getAccountId() + "," + acc.getAccountName() + "," + acc.getBalance() + "\n");
             }
             writer.close();
         } catch (IOException e) {
