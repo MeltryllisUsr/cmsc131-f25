@@ -4,10 +4,6 @@ public class Account {
     private String accountId; 
     private double balance;
     private String accountName;
-    public enum AccountType{
-        SAVINGS,
-        CHECKING
-    } 
     private AccountType accountType;
 
 /**
@@ -41,7 +37,41 @@ public class Account {
         double bal = Double.parseDouble(parts[3]);
         return new Account(type, id, name, bal);
     }
+     /**
+     * Adds money to the account.
+     * @param amount amount to add (must be positive)
+     */
+    public void credit(double amount) {
+        if (amount <= 0) {
+            System.out.println("Error: credit amount must be positive.");
+            return;
+        }
+        balance += amount;
+        balance = roundToTwoDecimals(balance);
+    }
+    /**
+     * Subtracts money from the account if there’s enough balance.
+     * @param amount amount to subtract (must be positive and <= balance)
+     */
+    public void debit(double amount) {
+        if (amount <= 0) {
+            System.out.println("Error: debit amount must be positive.");
+            return;
+        }
+        if (amount > balance) {
+            System.out.println("Error: insufficient funds.");
+            return;
+        }
+        balance -= amount;
+        balance = roundToTwoDecimals(balance);
+    }
 
+    /**
+     * Utility method to round balance to two decimal places.
+     */
+    private double roundToTwoDecimals(double value) {
+        return Math.floor(value * 100) / 100.0;
+    }
     
     public String toCSV() {
         return accountType + "," + accountId + "," + accountName + "," + balance;
@@ -59,6 +89,12 @@ public class Account {
         return balance;
     }
     public AccountType getAccountType() {
+        return accountType;
+    }
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+    public AccountType getType() {
         return accountType;
     }
     

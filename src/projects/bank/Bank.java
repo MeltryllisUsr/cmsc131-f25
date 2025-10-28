@@ -28,7 +28,7 @@ public class Bank {
     return true;
 }
 
-    public Account getAccount(int accountId) { 
+    public Account getAccount(String accountId) { 
         for (int i = 0; i <count; i++){
             if (accounts[i].getAccountId().equals(accountId)){
             return accounts[i];
@@ -39,16 +39,16 @@ public class Bank {
     public int getCount(){
         return count;
         }
-        public Account getAccountByName(String accountName){
-            for (int i = 0; i < count; i++) {
-                if (accounts[i].getAccountName().equals(accountName)) {
-                    return accounts[i];
-                }
+    public Account getAccountByName(String accountName){
+        for (int i = 0; i < count; i++) {
+            if (accounts[i].getAccountName().equals(accountName)) {
+                return accounts[i];
             }
-            return null;
+        }
+        return null;
         }
 
-    /**
+ /**
  * Loads accounts from accounts.csv file and add them to the bank.
  * 
  * @param filename the name (or path) of the accounts CSV file
@@ -56,13 +56,13 @@ public class Bank {
  *         false if the file could not be opened or a read/parse error occurred
  */
     public boolean loadAccounts(String filename){
-        try (Scanner input = new Scanner(new File(filename)));
+        try (Scanner input = new Scanner(new File(filename))){
         while (input.hasNextLine()) {
             String line = input.nextLine();
             Account acc = Account.fromCSV(line);
             addAccount(acc);
         }
-        return true;
+        return true;}
          catch (FileNotFoundException e) {
         System.err.println("File not found: " + filename);
         return false;
@@ -91,7 +91,35 @@ public class Bank {
             result = false;
         }
         return result;
-        
-
     } 
+    public void processTransactions(String filename) {
+    try {
+        // open the file
+        Scanner input = new Scanner(new File(filename));
+
+        // read each line of the file
+        while (input.hasNextLine()) {
+            String line = input.nextLine();  // <-- defines 'line'!
+
+            // this is your teacher's provided code
+            Transaction trs = Transaction.create(line);
+            if (trs != null) {
+                Account acct = getAccount(trs.getAccountID());
+                if (acct != null) {
+                    trs.execute(acct);
+                } else {
+                    // this is an error condition! account not found!
+                    System.out.println("Account not found for ID: " + trs.getAccountID());
+                }
+            }
+        }
+
+        input.close();
+
+    } catch (FileNotFoundException e) {
+        System.out.println("Error: Could not open file " + filename);
     }
+}
+
+    }
+    
