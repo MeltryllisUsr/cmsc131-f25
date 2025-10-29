@@ -1,6 +1,3 @@
-/** TODO list
- * Run the main routine after fixing the Account class fromCSV method.
- */
 package projects.bank;
 
 import java.io.File;

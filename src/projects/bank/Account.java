@@ -1,17 +1,10 @@
-/** TODO LIST
- * 
- * Have fromCSV return a CheckingAccount or SavingsAccount based on value.
- * 
- * Move logic checking that amount > 0 out of credit/debit methods. It should go in the constructor for a Transaction.
- * 
- * Move nonsufficient funds logic out of credit/debit methods. It should go in a validate method for a Transaction.
- */
 package projects.bank;
 
-abstract class Account {
+public class Account {
     private String accountId; 
     private double balance;
     private String accountName;
+    private AccountType accountType;
 
 /**
  * Constructs a new Account with the specified type, ID, name, and balance.
@@ -21,7 +14,8 @@ abstract class Account {
  * @param accountName the name of the account owner
  * @param balance the balance of the account
  */    
-    protected Account(String accountId, String accountName, double balance){
+    public Account(AccountType accountType, String accountId, String accountName, double balance){
+        this.accountType = accountType;
         this.accountId = accountId;
         this.accountName = accountName;
         this.balance = balance;
@@ -73,7 +67,7 @@ abstract class Account {
     }
     
     public String toCSV() {
-        return getType() + "," + accountId + "," + accountName + "," + balance;
+        return accountType + "," + accountId + "," + accountName + "," + balance;
     }
 
     public String getAccountId() {
@@ -87,6 +81,14 @@ abstract class Account {
     public double getBalance() {
         return balance;
     }
-    abstract AccountType getType();
+    public AccountType getAccountType() {
+        return accountType;
+    }
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+    public AccountType getType() {
+        return accountType;
+    }
     
 }
