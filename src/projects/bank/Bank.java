@@ -36,6 +36,14 @@ public class Bank {
             }
             return null;
         }
+    public int indexOfAccount(String accountId) { 
+        for (int i = 0; i <count; i++){
+            if (accounts[i].getAccountId().equals(accountId)){
+            return i;
+                }
+            }
+            return -1;
+        }
     public int getCount(){
         return count;
         }
@@ -83,7 +91,7 @@ public class Bank {
             writer = new FileWriter(file);
             for (int i = 0; i <accounts.length; i++){
                 Account acc = accounts[i];
-                writer.write(acc.getAccountType() + "," + acc.getAccountId() + "," + acc.getAccountName() + "," + acc.getBalance() + "\n");
+                writer.write(acc.toCSV() + "\n");
             }
             writer.close();
         } catch (IOException e) {
@@ -101,18 +109,15 @@ public class Bank {
         while (input.hasNextLine()) {
             String line = input.nextLine();  // <-- defines 'line'!
 
-            // this is your teacher's provided code
             Transaction trs = Transaction.create(line);
-            if (trs != null) {
+            if (indexOfAccount(trs.getAccountID()) >=0) {
                 Account acct = getAccount(trs.getAccountID());
-                if (acct != null) {
-                    trs.execute(acct);
-                } else {
+            }   else {
                     // this is an error condition! account not found!
                     System.out.println("Account not found for ID: " + trs.getAccountID());
                 }
             }
-        }
+        
 
         input.close();
 

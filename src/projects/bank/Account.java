@@ -35,17 +35,18 @@ public class Account {
         String id = parts[1];
         String name = parts[2];
         double bal = Double.parseDouble(parts[3]);
-        return new Account(type, id, name, bal);
-    }
+        if (type == AccountType.SAVINGS) {
+            return new SavingsAccount(id, name, bal);
+        } else {
+            return new CheckingAccount(id, name, bal);
+        }
+        }
+    
      /**
      * Adds money to the account.
      * @param amount amount to add (must be positive)
      */
     public void credit(double amount) {
-        if (amount <= 0) {
-            System.out.println("Error: credit amount must be positive.");
-            return;
-        }
         balance += amount;
         balance = roundToTwoDecimals(balance);
     }
@@ -54,14 +55,6 @@ public class Account {
      * @param amount amount to subtract (must be positive and <= balance)
      */
     public void debit(double amount) {
-        if (amount <= 0) {
-            System.out.println("Error: debit amount must be positive.");
-            return;
-        }
-        if (amount > balance) {
-            System.out.println("Error: insufficient funds.");
-            return;
-        }
         balance -= amount;
         balance = roundToTwoDecimals(balance);
     }

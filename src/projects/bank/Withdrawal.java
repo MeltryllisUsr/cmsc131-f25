@@ -18,10 +18,6 @@ public class Withdrawal extends Transaction {
 
 @Override
     public boolean validate(Account account) {
-        if (account == null) return false;
-        if (!account.getAccountId().equals(getAccountID())) return false;
-        if (getAmount() <= 0) return false;
-        if (account.getBalance() < getAmount()) return false; 
         return true;
     }
 }

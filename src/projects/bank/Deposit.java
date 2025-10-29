@@ -15,9 +15,6 @@ public class Deposit extends Transaction {
     @Override
     public boolean validate(Account account) {
         // Validate before executing
-        if (account == null) return false;
-        if (!account.getAccountId().equals(getAccountID())) return false;
-        if (getAmount() <= 0) return false;
         return true;
     }
 }

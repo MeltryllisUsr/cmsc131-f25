@@ -30,6 +30,9 @@ abstract class Transaction {
      * @param amount the transaction amount
      */
     protected Transaction(String accountID, double amount) {
+        if (amount <= 0) {
+        throw new IllegalArgumentException("Transaction amount must be > 0");
+    }
         this.accountID = accountID;
         this.amount = amount;
     }
@@ -49,18 +52,15 @@ abstract class Transaction {
             throw new IllegalArgumentException("Invalid transaction line: " + inputLine);
         }
 
-        String type = parts[0].trim().toLowerCase();
+        TransactionType type = TransactionType.valueOf(parts[0].trim().toUpperCase());
         String accountID = parts[1].trim();
         double amount = Double.parseDouble(parts[2].trim());
 
-        switch (type) {
-            case "deposit":
-                return new Deposit(accountID, amount);
-            case "withdrawal":
-                return new Withdrawal(accountID, amount);
-            default:
-                throw new IllegalArgumentException("Unknown transaction type: " + type);
-        }
+        if (type == TransactionType.DEPOSIT) {
+        return new Deposit(accountID, amount);
+    }   else {
+        return new Withdrawal(accountID, amount);
+    }
     }
 
     /**
