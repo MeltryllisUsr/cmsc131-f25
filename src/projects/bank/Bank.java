@@ -9,6 +9,8 @@ import java.util.Scanner;
 public class Bank {
     private Account[] accounts;
     private int count;
+    private Audit audit;
+
 
     public Bank() {
         accounts = new Account[100];
