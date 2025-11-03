@@ -5,14 +5,14 @@ abstract class Transaction {
     private final String accountID;
     private final double amount;
 
-
     /**
-     * Executes this transaction on the specified account.
+     * Executes this transaction on the specified account, using the provided audit logger.
      * Each subclass (Deposit, Withdrawal, etc.) will define its own behavior.
      *
      * @param account the account to apply the transaction to
+     * @param audit the Audit object used to log actions and errors
      */
-    abstract void execute(Account account);
+    abstract void execute(Account account, Audit audit);
 
     /**
      * Validates this transaction before execution.
@@ -31,12 +31,12 @@ abstract class Transaction {
      */
     protected Transaction(String accountID, double amount) {
         if (amount <= 0) {
-        throw new IllegalArgumentException("Transaction amount must be > 0");
-    }
+            throw new IllegalArgumentException("Transaction amount must be > 0");
+        }
         this.accountID = accountID;
         this.amount = amount;
     }
-    
+
     /**
      * Factory method that creates the correct Transaction subclass
      * based on the input line from the CSV file.
@@ -57,22 +57,18 @@ abstract class Transaction {
         double amount = Double.parseDouble(parts[2].trim());
 
         if (type == TransactionType.DEPOSIT) {
-        return new Deposit(accountID, amount);
-    }   else {
-        return new Withdrawal(accountID, amount);
-    }
+            return new Deposit(accountID, amount);
+        } else {
+            return new Withdrawal(accountID, amount);
+        }
     }
 
-    /**
-     * Returns the account ID associated with this transaction.
-     */
+    /** Returns the account ID associated with this transaction. */
     public String getAccountID() {
         return accountID;
     }
 
-    /**
-     * Returns the transaction amount.
-     */
+    /** Returns the transaction amount. */
     public double getAmount() {
         return amount;
     }

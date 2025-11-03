@@ -66,6 +66,10 @@ public class Bank {
  *         false if the file could not be opened or a read/parse error occurred
  */
     public boolean loadAccounts(String filename){
+        audit = new Audit();
+        if (!audit.initialize("audit.csv")) {
+        System.out.println("Failed to initialize audit log!");
+    } 
         try (Scanner input = new Scanner(new File(filename))){
         while (input.hasNextLine()) {
             String line = input.nextLine();

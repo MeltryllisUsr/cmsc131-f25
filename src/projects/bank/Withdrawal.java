@@ -7,17 +7,17 @@ public class Withdrawal extends Transaction {
     }
 
     @Override
-    public void execute(Account account) {
-        // Perform withdrawal only if validated
+    public void execute(Account account, Audit audit) {
         if (validate(account)) {
             account.setBalance(account.getBalance() - getAmount());
+            audit.write(account, String.format("Withdrew $%.2f", getAmount()), Audit.EntryType.INFO);
         } else {
-            System.out.println("Invalid withdrawal: insufficient funds or invalid data.");
+            audit.write(account, String.format("Withdrawal of $%.2f failed: insufficient funds.", getAmount()), Audit.EntryType.ERROR);
         }
     }
 
-@Override
+    @Override
     public boolean validate(Account account) {
-        return true;
+        return account.getBalance() >= getAmount();
     }
 }

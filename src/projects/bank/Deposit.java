@@ -7,14 +7,19 @@ public class Deposit extends Transaction {
     }
 
     @Override
-    public void execute(Account account) {
-        // Perform deposit
-        account.setBalance(account.getBalance() + getAmount());
+    public void execute(Account account, Audit audit) {
+        if (validate(account)) {
+            // Perform deposit
+            account.setBalance(account.getBalance() + getAmount());
+            audit.write(account, String.format("Deposited $%.2f", getAmount()), Audit.EntryType.INFO);
+        } else {
+            audit.write(account, String.format("Deposit of $%.2f failed.", getAmount()), Audit.EntryType.ERROR);
+        }
     }
 
     @Override
     public boolean validate(Account account) {
-        // Validate before executing
+        // Always valid, but method must exist
         return true;
     }
 }
