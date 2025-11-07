@@ -1,3 +1,8 @@
+/** TODO / comments
+ * make this an abstract class, with getType being an abstract method that's overrided by CheckingAccount and SavingsAccount
+ * 
+ * 
+ */
 package projects.bank;
 
 public class Account {
@@ -85,6 +90,7 @@ public class Account {
         return accountType;
     }
     public void setBalance(double balance) {
+        // this is unnecessary since you implemented credit/debit. it is confusing to have multiple methods that do the same thing
         this.balance = balance;
     }
     public AccountType getType() {

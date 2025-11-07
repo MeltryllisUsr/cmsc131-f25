@@ -118,6 +118,7 @@ public class Bank {
             Transaction trs = Transaction.create(line);
             if (indexOfAccount(trs.getAccountID()) >=0) {
                 Account acct = getAccount(trs.getAccountID());
+                // continue to transaction validation and execution
             }   else {
                     // this is an error condition! account not found!
                     System.out.println("Account not found for ID: " + trs.getAccountID());

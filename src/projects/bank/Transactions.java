@@ -1,3 +1,8 @@
+/** TODO / comments
+ * 
+ * constructor
+ * also validation accoundID
+ */
 package projects.bank;
 
 abstract class Transaction {

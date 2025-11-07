@@ -28,5 +28,7 @@ public class AccountTest {
     // TODO add tests for 
     // static factory throws on null input
     // toCSV output is correct
+    // correctness of credit method
+    // correctness of debit method
 
 }

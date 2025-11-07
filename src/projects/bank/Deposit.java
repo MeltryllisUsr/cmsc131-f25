@@ -1,3 +1,7 @@
+/** TODO / comments
+ * 
+ * you should use credit instead of setBalance
+ */
 package projects.bank;
 
 public class Deposit extends Transaction {

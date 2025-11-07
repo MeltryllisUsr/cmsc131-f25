@@ -1,3 +1,6 @@
+/** TODO / comments
+ * you should use debit instead of setBalance
+ */
 package projects.bank;
 
 public class Withdrawal extends Transaction {
