@@ -1,8 +1,3 @@
-/** TODO / comments
- * 
- * constructor
- * also validation accoundID
- */
 package projects.bank;
 
 abstract class Transaction {
@@ -37,6 +32,9 @@ abstract class Transaction {
     protected Transaction(String accountID, double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Transaction amount must be > 0");
+        }
+       if (!accountID.matches("[a-zA-Z]{1,2}\\d{3,}")) {
+            throw new IllegalArgumentException("Invalid account ID format: " + accountID);
         }
         this.accountID = accountID;
         this.amount = amount;
