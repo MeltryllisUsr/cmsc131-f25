@@ -25,10 +25,29 @@ public class AccountTest {
         assertThrows(NumberFormatException.class, () -> Account.fromCSV("savings,AC456,Alice,notanumber"));
     }
 
-    // TODO add tests for 
-    // static factory throws on null input
-    // toCSV output is correct
-    // correctness of credit method
-    // correctness of debit method
+    @Test
+    public void testFromCSV_invalidTypeThrows() {
+        assertThrows(IllegalArgumentException.class, () -> Account.fromCSV("invalidtype,AC789,Bob,500.0"));
+    }
 
+    @Test
+    public void testToCSV_outputsCorrectFormat() {
+        Account acc = new CheckingAccount("AC789", "Dana", 250.75);
+        String csv = acc.toCSV();
+        assertEquals("CHECKING,AC789,Dana,250.75", csv);
+    }
+
+    @Test
+    public void testCredit() {
+        Account acc = new SavingsAccount("AC789", "Dana", 250.75);
+        acc.credit(99.25);
+        assertEquals(350.0, acc.getBalance(), 1e-9);
+    }
+
+     @Test
+    public void testDebit() {
+        Account acc = new SavingsAccount("AC789", "Dana", 250.75);
+        acc.credit(99.25);
+        assertEquals(250.0, acc.getBalance(), 1e-9);
+    }
 }

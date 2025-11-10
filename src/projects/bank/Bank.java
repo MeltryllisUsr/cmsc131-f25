@@ -107,27 +107,25 @@ public class Bank {
         return result;
     } 
     public void processTransactions(String filename) {
-    try {
-        // open the file
-        Scanner input = new Scanner(new File(filename));
-
-        // read each line of the file
+    try (Scanner input = new Scanner(new File(filename))) {
         while (input.hasNextLine()) {
-            String line = input.nextLine();  // <-- defines 'line'!
-
+            String line = input.nextLine();
             Transaction trs = Transaction.create(line);
-            if (indexOfAccount(trs.getAccountID()) >=0) {
+
+            int index = indexOfAccount(trs.getAccountID());
+            if (index >= 0) {
                 Account acct = getAccount(trs.getAccountID());
-                // continue to transaction validation and execution
-            }   else {
-                    // this is an error condition! account not found!
-                    System.out.println("Account not found for ID: " + trs.getAccountID());
+
+                if (trs.validate(acct)) {
+                    trs.execute(acct, audit);
+                } else {
+                    audit.write(acct, "Transaction failed validation: " + line, Audit.EntryType.ERROR);
                 }
+            } else {
+                // account not found
+                audit.write("Transaction for unknown account ID: " + trs.getAccountID());
             }
-        
-
-        input.close();
-
+        }
     } catch (FileNotFoundException e) {
         System.out.println("Error: Could not open file " + filename);
     }

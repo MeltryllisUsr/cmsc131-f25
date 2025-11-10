@@ -1,11 +1,75 @@
 package projects.bank;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TransactionsTest {
 
-    // TODO add tests for
-    // constructor data validation
-    // static factory data validation
-    // validation logic
-    // correctness of execute method
+    @Test
+    public void testConstructorValidation() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Withdrawal("acc123", -50.0);
+       });
+       assertThrows(IllegalArgumentException.class, () -> {
+            new Withdrawal("acc123", 0.0);
+       });
+       assertThrows(IllegalArgumentException.class, () -> {
+           new Deposit(null, 100.0);
+       });
+       assertThrows(IllegalArgumentException.class, () -> {
+           new Deposit("bad id", 100.0);
+       });
+    }
 
+    @Test
+    public void testFactoryCreatesCorrectTransaction() {
+    Transaction t = Transaction.create("deposit,xf123,200.0");
+    assertTrue(t instanceof Deposit);
+    assertEquals("xf123", t.getAccountID());
+    assertEquals(200.0, t.getAmount(), 1e-9);
+    }
+
+    @Test
+    public void testFactoryRejectsBadInput() {
+    assertThrows(IllegalArgumentException.class, () -> Transaction.create("bad,data"));
+    }
+
+    @Test
+    public void testWithdrawalValidationFailsForLowFunds() {
+    Account acc = new CheckingAccount("acc1", "Test", 50.0);
+    Withdrawal w = new Withdrawal("acc1", 100.0);
+    assertFalse(w.validate(acc));
+    }
+
+    @Test
+     void testWithdrawalValidationSucceedsWhenEnoughFunds() {
+    Account acc = new CheckingAccount("acc1", "Test", 200.0);
+    Withdrawal w = new Withdrawal("acc1", 100.0);
+    assertTrue(w.validate(acc));
+    }
+
+    @Test
+    public void testDepositExecuteAddsToBalance() {
+    Account acc = new CheckingAccount("acc1", "Test", 100.0);
+    Deposit d = new Deposit("acc1", 50.0);
+    Audit audit = new Audit();
+    audit.initialize("data/testAudit.csv"); 
+
+    d.execute(acc, audit);
+    assertEquals(150.0, acc.getBalance(), 1e-9); 
+
+    audit.close();
+    }
+
+    @Test
+    public void testWithdrawalExecuteSubtractsFromBalance() {
+    Account acc = new CheckingAccount("acc1", "Test", 200.0);
+    Withdrawal w = new Withdrawal("acc1", 50.0);
+    Audit audit = new Audit();
+    audit.initialize("data/testAudit.csv");
+
+    w.execute(acc, audit);
+    assertEquals(150.0, acc.getBalance(), 1e-9); 
+    audit.close();
+    }
 }
