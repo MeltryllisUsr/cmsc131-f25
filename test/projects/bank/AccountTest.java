@@ -14,7 +14,7 @@ public class AccountTest {
     @Test
     public void testFromCSV_parsesFields() {
         Account acc = Account.fromCSV("checking,AC123,Lorenzo,1000.5");
-        assertEquals("checking", acc.getType());
+        assertEquals(AccountType.CHECKING, acc.getType());
         assertEquals("AC123", acc.getAccountId());
         assertEquals("Lorenzo", acc.getAccountName());
         assertEquals(1000.5, acc.getBalance(), 1e-9);
@@ -47,7 +47,7 @@ public class AccountTest {
      @Test
     public void testDebit() {
         Account acc = new SavingsAccount("AC789", "Dana", 250.75);
-        acc.credit(99.25);
-        assertEquals(250.0, acc.getBalance(), 1e-9);
+        acc.debit(100.75);
+        assertEquals(150.0, acc.getBalance(), 1e-9);
     }
 }

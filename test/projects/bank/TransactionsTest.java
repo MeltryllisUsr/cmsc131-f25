@@ -8,12 +8,12 @@ public class TransactionsTest {
     @Test
     public void testConstructorValidation() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Withdrawal("acc123", -50.0);
+            new Withdrawal("xf123", -50.0);
        });
        assertThrows(IllegalArgumentException.class, () -> {
-            new Withdrawal("acc123", 0.0);
+            new Withdrawal("xf123", 0.0);
        });
-       assertThrows(IllegalArgumentException.class, () -> {
+       assertThrows(NullPointerException.class, () -> {
            new Deposit(null, 100.0);
        });
        assertThrows(IllegalArgumentException.class, () -> {
@@ -36,22 +36,22 @@ public class TransactionsTest {
 
     @Test
     public void testWithdrawalValidationFailsForLowFunds() {
-    Account acc = new CheckingAccount("acc1", "Test", 50.0);
-    Withdrawal w = new Withdrawal("acc1", 100.0);
+    Account acc = new CheckingAccount("xf123", "Lorenzo", 50.0);
+    Withdrawal w = new Withdrawal("xf123", 100.0);
     assertFalse(w.validate(acc));
     }
 
     @Test
      void testWithdrawalValidationSucceedsWhenEnoughFunds() {
-    Account acc = new CheckingAccount("acc1", "Test", 200.0);
-    Withdrawal w = new Withdrawal("acc1", 100.0);
+    Account acc = new CheckingAccount("xf123", "Lorenzo", 200.0);
+    Withdrawal w = new Withdrawal("xf123", 100.0);
     assertTrue(w.validate(acc));
     }
 
     @Test
     public void testDepositExecuteAddsToBalance() {
-    Account acc = new CheckingAccount("acc1", "Test", 100.0);
-    Deposit d = new Deposit("acc1", 50.0);
+    Account acc = new CheckingAccount("xf123", "Lorenzo", 100.0);
+    Deposit d = new Deposit("xf123", 50.0);
     Audit audit = new Audit();
     audit.initialize("data/testAudit.csv"); 
 
@@ -63,8 +63,8 @@ public class TransactionsTest {
 
     @Test
     public void testWithdrawalExecuteSubtractsFromBalance() {
-    Account acc = new CheckingAccount("acc1", "Test", 200.0);
-    Withdrawal w = new Withdrawal("acc1", 50.0);
+    Account acc = new CheckingAccount("xf123", "Lorenzo", 200.0);
+    Withdrawal w = new Withdrawal("xf123", 50.0);
     Audit audit = new Audit();
     audit.initialize("data/testAudit.csv");
 

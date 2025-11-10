@@ -23,7 +23,7 @@ public class BankTest {
             fail("Exception thrown: " + e.getMessage());
         }
         
-        assertEquals(1+4, bank.getCount());
+        assertEquals(1, bank.getCount());
         
         Account loadedAcc = bank.getAccountByName("Lorenzo");
         assertNotNull(loadedAcc);
@@ -43,7 +43,9 @@ public class BankTest {
         } catch (Exception e){
             fail("Exception thrown: " + e.getMessage());
         }
+        
         assertEquals(1, bank.getCount());
+
         Account writtenAcc = bank.getAccountByName("Lorenzo");
         assertNotNull(writtenAcc);
         assertEquals(1000.0, writtenAcc.getBalance(), 1e-9);

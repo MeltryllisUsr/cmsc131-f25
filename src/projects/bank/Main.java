@@ -65,7 +65,7 @@ public class Main {
     public static void phase2() {
         String accountsFilename = "data/accounts.csv";
         Bank bank = new Bank();
-        boolean result = bank.loadAccounts(accountsFilename); // TODO convert from void to boolean
+        boolean result = bank.loadAccounts(accountsFilename);
 
         System.out.println("Result of loading account: " + result);
         System.out.println("Number of accounts: " + bank.getCount());

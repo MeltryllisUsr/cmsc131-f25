@@ -95,10 +95,12 @@ public class Bank {
         FileWriter writer = null;
         try {
             writer = new FileWriter(file);
-            for (int i = 0; i <accounts.length; i++){
-                Account acc = accounts[i];
-                writer.write(acc.toCSV() + "\n");
-            }
+           for (int i = 0; i < count; i++) {
+        Account acc = accounts[i];
+        if (acc != null) {
+            writer.write(acc.toCSV() + "\n");
+    }
+}
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
