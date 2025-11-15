@@ -1,90 +1,88 @@
 package projects.bank;
 
 public abstract class Account {
-    private String accountId; 
-    private double balance;
-    private String accountName;
-    private AccountType accountType;
 
-/**
- * Constructs a new Account with the specified type, ID, name, and balance.
- *
- * @param accountType the type of account (e.g., "savings" or "checking")
- * @param accountId the unique ID of the account
- * @param accountName the name of the account owner
- * @param balance the balance of the account
- */    
-    public Account(AccountType accountType, String accountId, String accountName, double balance){
+    private final String accountId;
+    private double balance;
+    private final String accountName;
+    private final AccountType accountType;
+
+    /**
+     * Constructs a new Account with the specified type, ID, name, and balance.
+     */
+    public Account(AccountType accountType, String accountId, String accountName, double balance) {
         this.accountType = accountType;
         this.accountId = accountId;
         this.accountName = accountName;
-        this.balance = balance;
+        this.balance = roundToTwoDecimals(balance);
     }
 
-/**
- * Creates an Account object from a CSV-formatted string.
- * The CSV string must contain the account type, ID, name, and balance separated by commas.
- *
- * @param csv a comma-separated string representing account data
- *             (e.g. "savings,xf123456,Lorenzo de Medici,1000.0")
- * @return a new Account object parsed from the CSV string
- */
+    /**
+     * Creates an Account object from a CSV-formatted string.
+     * Expected format: "savings,xf123456,Name,1000.00"
+     */
     public static Account fromCSV(String csv) {
+
         String[] parts = csv.split(",");
-        AccountType type = AccountType.valueOf(parts[0].toUpperCase()); // converts "savings" to SAVINGS
-        String id = parts[1];
-        String name = parts[2];
-        double bal = Double.parseDouble(parts[3]);
-        if (type == AccountType.SAVINGS) {
-            return new SavingsAccount(id, name, bal);
-        } else {
-            return new CheckingAccount(id, name, bal);
+        if (parts.length != 4) {
+            throw new IllegalArgumentException("Invalid CSV account line: " + csv);
         }
-        }
-    
-     /**
-     * Adds money to the account.
-     * @param amount amount to add (must be positive)
-     */
-    public void credit(double amount) {
-        balance += amount;
-        balance = roundToTwoDecimals(balance);
-    }
-    /**
-     * Subtracts money from the account if there’s enough balance.
-     * @param amount amount to subtract (must be positive and <= balance)
-     */
-    public void debit(double amount) {
-        balance -= amount;
-        balance = roundToTwoDecimals(balance);
+
+        AccountType type = AccountType.valueOf(parts[0].trim().toUpperCase());
+        String id = parts[1].trim();
+        String name = parts[2].trim();
+        double bal = Double.parseDouble(parts[3].trim());
+
+        return switch (type) {
+            case SAVINGS -> new SavingsAccount(id, name, bal);
+            case CHECKING -> new CheckingAccount(id, name, bal);
+        };
     }
 
-    /**
-     * Utility method to round balance to two decimal places.
-     */
+    /** Deposits the given amount into the account. */
+    public void credit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Credit amount must be positive.");
+        }
+        balance = roundToTwoDecimals(balance + amount);
+    }
+
+    /** Withdraws the given amount from the account. */
+    public void debit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Debit amount must be positive.");
+        }
+        balance = roundToTwoDecimals(balance - amount);
+    }
+
+    /** Utility: round to 2 decimals. */
     private double roundToTwoDecimals(double value) {
         return Math.floor(value * 100) / 100.0;
     }
-    
+
+    /** CSV representation */
     public String toCSV() {
         return accountType + "," + accountId + "," + accountName + "," + balance;
     }
 
-    public String getAccountId() {
-        return accountId;
+    // ----------- Getters -----------
+    public String getAccountId() { return accountId; }
+    public String getAccountName() { return accountName; }
+    public double getBalance() { return balance; }
+
+    /**
+     * Basic withdrawal rule: must have enough balance.
+     * SavingsAccount will override this to add:
+     *  - monthly limits
+     *  - threshold checks
+     */
+    public boolean canWithdraw(double amount) {
+        return amount <= balance;
     }
-    
-    public String getAccountName() {
-        return accountName;
-    }
-    
-    public double getBalance() {
-        return balance;
-    }
-    public AccountType getAccountType() {
-        return accountType;
-    }
-   
+
+    /** Must be implemented by subclasses. */
     public abstract AccountType getType();
-    
+
+    /** Monthly interest/penalties. */
+    public abstract void doEndOfMonthActions(Audit audit);
 }

@@ -10,13 +10,13 @@ abstract class Transaction {
      * Each subclass (Deposit, Withdrawal, etc.) will define its own behavior.
      *
      * @param account the account to apply the transaction to
-     * @param audit the Audit object used to log actions and errors
+     * @param audit   the Audit object used to log actions and errors
      */
     abstract void execute(Account account, Audit audit);
 
     /**
      * Validates this transaction before execution.
-     * Each subclass (Deposit, Withdrawal, etc.) will define its own logic.
+     * Each subclass will define its own logic.
      *
      * @param account the account to validate against
      * @return true if valid, false otherwise
@@ -27,15 +27,18 @@ abstract class Transaction {
      * Constructs a Transaction object with the given account ID and amount.
      *
      * @param accountID the ID of the account
-     * @param amount the transaction amount
+     * @param amount    the transaction amount
      */
     protected Transaction(String accountID, double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Transaction amount must be > 0");
         }
-       if (!accountID.matches("[a-zA-Z]{1,2}\\d{3,}")) {
+
+        // Validate account ID format
+        if (!accountID.matches("[a-zA-Z]{1,2}\\d{3,}")) {
             throw new IllegalArgumentException("Invalid account ID format: " + accountID);
         }
+
         this.accountID = accountID;
         this.amount = amount;
     }
@@ -44,25 +47,48 @@ abstract class Transaction {
      * Factory method that creates the correct Transaction subclass
      * based on the input line from the CSV file.
      *
-     * Example line: "deposit,xf123456,200.0"
+     * Expected format: "deposit,xf123456,200.0"
      *
-     * @param inputLine a CSV-formatted line describing the transaction
-     * @return a new Transaction object (Deposit or Withdrawal)
+     * @param inputLine CSV-formatted transaction line
+     * @return a Transaction object (Deposit or Withdrawal)
      */
     protected static Transaction create(String inputLine) {
+
+        if (inputLine == null || inputLine.isBlank()) {
+            throw new IllegalArgumentException("Transaction line is empty.");
+        }
+
         String[] parts = inputLine.split(",");
         if (parts.length != 3) {
             throw new IllegalArgumentException("Invalid transaction line: " + inputLine);
         }
 
-        TransactionType type = TransactionType.valueOf(parts[0].trim().toUpperCase());
-        String accountID = parts[1].trim();
-        double amount = Double.parseDouble(parts[2].trim());
+        TransactionType type;
+        try {
+            type = TransactionType.valueOf(parts[0].trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid transaction type: " + parts[0]);
+        }
 
-        if (type == TransactionType.DEPOSIT) {
-            return new Deposit(accountID, amount);
-        } else {
-            return new Withdrawal(accountID, amount);
+        String accountID = parts[1].trim();
+        double amount;
+
+        try {
+            amount = Double.parseDouble(parts[2].trim());
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Invalid amount in transaction: " + parts[2]);
+        }
+
+        switch (type) {
+            case DEPOSIT:
+                return new Deposit(accountID, amount);
+
+            case WITHDRAWAL:
+                return new Withdrawal(accountID, amount);
+
+            default:
+                // Should never happen unless enum updated incorrectly
+                throw new IllegalStateException("Unhandled transaction type: " + type);
         }
     }
 

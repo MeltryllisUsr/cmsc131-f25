@@ -7,131 +7,141 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Bank {
+
     private Account[] accounts;
     private int count;
     private Audit audit;
 
-
     public Bank() {
         accounts = new Account[100];
         count = 0;
+        audit = new Audit();
+        audit.initialize("audit.csv");
     }
 
-    public boolean addAccount(Account acc) { 
-    if (count == accounts.length) {
-        Account[] biggerArray = new Account[accounts.length * 2];
-        for (int i = 0; i < accounts.length; i++) {
-            biggerArray[i] = accounts[i];
+    /** Adds an account, resizing array if needed. */
+    public boolean addAccount(Account acc) {
+        if (count == accounts.length) {
+            Account[] bigger = new Account[accounts.length * 2];
+            System.arraycopy(accounts, 0, bigger, 0, accounts.length);
+            accounts = bigger;
         }
-        accounts = biggerArray;
+        accounts[count++] = acc;
+        return true;
     }
-    accounts[count] = acc;
-    count++;
-    return true;
-}
 
-    public Account getAccount(String accountId) { 
-        for (int i = 0; i <count; i++){
-            if (accounts[i].getAccountId().equals(accountId)){
-            return accounts[i];
-                }
+    /** Retrieves an account by ID. */
+    public Account getAccount(String accountId) {
+        for (int i = 0; i < count; i++) {
+            if (accounts[i].getAccountId().equals(accountId)) {
+                return accounts[i];
             }
-            return null;
         }
-    public int indexOfAccount(String accountId) { 
-        for (int i = 0; i <count; i++){
-            if (accounts[i].getAccountId().equals(accountId)){
-            return i;
-                }
+        return null;
+    }
+
+    /** Returns the index of the given account ID, or -1 if missing. */
+    public int indexOfAccount(String accountId) {
+        for (int i = 0; i < count; i++) {
+            if (accounts[i].getAccountId().equals(accountId)) {
+                return i;
             }
-            return -1;
         }
-    public int getCount(){
+        return -1;
+    }
+
+    public int getCount() {
         return count;
-        }
-    public Account getAccountByName(String accountName){
+    }
+
+    /** Retrieves an account by owner name. */
+    public Account getAccountByName(String accountName) {
         for (int i = 0; i < count; i++) {
             if (accounts[i].getAccountName().equals(accountName)) {
                 return accounts[i];
             }
         }
         return null;
-        }
+    }
 
- /**
- * Loads accounts from accounts.csv file and add them to the bank.
- * 
- * @param filename the name (or path) of the accounts CSV file
- * @return true if file was read and all lines processed (or at least method completed),
- *         false if the file could not be opened or a read/parse error occurred
- */
-    public boolean loadAccounts(String filename){
-        audit = new Audit();
-        if (!audit.initialize("audit.csv")) {
-        System.out.println("Failed to initialize audit log!");
-    } 
-        try (Scanner input = new Scanner(new File(filename))){
-        while (input.hasNextLine()) {
-            String line = input.nextLine();
-            Account acc = Account.fromCSV(line);
-            addAccount(acc);
-        }
-        return true;}
-         catch (FileNotFoundException e) {
-        System.err.println("File not found: " + filename);
-        return false;
+    /**
+     * Loads accounts from a CSV file.
+     */
+    public boolean loadAccounts(String filename) {
+
+        try (Scanner input = new Scanner(new File(filename))) {
+
+            while (input.hasNextLine()) {
+                String line = input.nextLine().trim();
+                if (!line.isEmpty()) {
+                    Account acc = Account.fromCSV(line);
+                    addAccount(acc);
+                }
+            }
+            return true;
+
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filename);
+            return false;
         }
     }
- /**
- * Writes all accounts to a CSV file.
- * Each line will be in the format: accountType,accountId,accountName,balance
- *
- * @param filename the name (or path) of the accounts CSV file
- * @return true if writing succeeds, false if an I/O error occurs
- */    
-    public boolean writeAccounts(String filename){
-        boolean result = true;
-        File file = new File(filename);
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
-           for (int i = 0; i < count; i++) {
-        Account acc = accounts[i];
-        if (acc != null) {
-            writer.write(acc.toCSV() + "\n");
-    }
-}
-            writer.close();
+
+    /**
+     * Saves all accounts to a CSV file.
+     */
+    public boolean writeAccounts(String filename) {
+
+        try (FileWriter writer = new FileWriter(new File(filename))) {
+
+            for (int i = 0; i < count; i++) {
+                writer.write(accounts[i].toCSV() + "\n");
+            }
+            return true;
+
         } catch (IOException e) {
             e.printStackTrace();
-            result = false;
+            return false;
         }
-        return result;
-    } 
-    public void processTransactions(String filename) {
-    try (Scanner input = new Scanner(new File(filename))) {
-        while (input.hasNextLine()) {
-            String line = input.nextLine();
-            Transaction trs = Transaction.create(line);
+    }
 
-            int index = indexOfAccount(trs.getAccountID());
-            if (index >= 0) {
+    /**
+     * Processes each transaction in the transaction file,
+     * then performs end-of-month actions.
+     */
+    public void processTransactions(String filename) {
+
+        try (Scanner input = new Scanner(new File(filename))) {
+
+            while (input.hasNextLine()) {
+                String line = input.nextLine().trim();
+                if (line.isEmpty())
+                    continue;
+
+                Transaction trs = Transaction.create(line);
                 Account acct = getAccount(trs.getAccountID());
+
+                if (acct == null) {
+                    audit.write("Transaction for unknown account ID: " + trs.getAccountID());
+                    continue;
+                }
 
                 if (trs.validate(acct)) {
                     trs.execute(acct, audit);
                 } else {
-                    audit.write(acct, "Transaction failed validation: " + line, Audit.EntryType.ERROR);
+                    audit.write(acct,
+                        "Transaction failed validation: " + line,
+                        Audit.EntryType.ERROR
+                    );
                 }
-            } else {
-                // account not found
-                audit.write("Transaction for unknown account ID: " + trs.getAccountID());
             }
+
+            // End-of-month actions
+            for (int i = 0; i < count; i++) {
+                accounts[i].doEndOfMonthActions(audit);
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: Could not open file " + filename);
         }
-    } catch (FileNotFoundException e) {
-        System.out.println("Error: Could not open file " + filename);
     }
 }
-
-    }
-    
