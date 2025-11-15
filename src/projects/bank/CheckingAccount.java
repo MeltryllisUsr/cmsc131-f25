@@ -16,7 +16,6 @@ public class CheckingAccount extends Account {
 
     /**
      * Allows Withdrawal to access the penalty amount
-     * without instanceof or type checking.
      */
     public static double getPenaltyAmount() {
         return PENALTY;
