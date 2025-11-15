@@ -28,7 +28,7 @@ public class SavingsAccount extends Account {
         return amount <= getBalance();
     }
 
-    // ---- Added public getters you need ----
+    // ---- Getters ----
     public int getWithdrawalsThisMonth() {
         return withdrawalsThisMonth;
     }
