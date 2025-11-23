@@ -13,6 +13,7 @@ public class Withdrawal extends Transaction {
 
         double amount = getAmount();
 
+        // FBK: ok but out of scope
         // --- 1. Fraud / threshold check (Savings and Checking share this rule)
         if (amount > 2500.00) {
             audit.write(account,

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 public class Audit {
     public enum EntryType { INFO, ERROR }
+    private FileWriter writer;
     public void write(String text) {
         text = text.replace(",", "");
         try {
@@ -37,5 +38,4 @@ public class Audit {
             System.out.println("Error in closing audit file.");
         }
     }
-    private FileWriter writer;
 }

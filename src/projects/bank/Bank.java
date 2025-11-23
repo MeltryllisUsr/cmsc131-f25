@@ -121,6 +121,7 @@ public class Bank {
                 Account acct = getAccount(trs.getAccountID());
 
                 if (acct == null) {
+                    // FBK: use write(Account acct, String text, EntryType type)
                     audit.write("Transaction for unknown account ID: " + trs.getAccountID());
                     continue;
                 }

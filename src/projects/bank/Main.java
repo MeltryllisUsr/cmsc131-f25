@@ -8,10 +8,20 @@ public class Main {
     public static void main(String[] args) {
         phase1();
         phase2();
+        phases3and4();
+    }
+
+    private static void phases3and4() {
+        /** FBK this routine errors out
+         * 
+         * in/java @/tmp/cp_8hz3u6drd7c1u45bgalvax05x.argfile projects.bank.Main 
+File not found: accounts.txt
+Error: Could not open file transactions.txt
+         */
         Bank bank = new Bank();
-    bank.loadAccounts( "accounts.txt" );
-    bank.processTransactions( "transactions.txt" );
-    bank.writeAccounts( "accounts.end.txt " );
+        bank.loadAccounts( "accounts.txt" );
+        bank.processTransactions( "transactions.txt" );
+        bank.writeAccounts( "accounts.end.txt " );
     }
 
     public static void phase1() {
