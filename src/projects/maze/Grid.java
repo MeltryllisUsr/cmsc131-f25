@@ -1,58 +1,57 @@
 package projects.maze;
 
 /**
- * Sparse collection of Cell objects for a maze.
- * Internally uses a simple array with linear search by coordinates.
+ * Simple fixed-capacity collection of {@link Cell} objects.
+ *
+ * Cells are looked up by linear search on their {@link Coords}.
  */
 public class Grid {
 
     private final Cell[] cells;
-    private int cellCount;
+    private int count;
 
     /**
-     * Constructs a Grid backed by an array of the given maximum size.
+     * Constructs a grid with room for at most {@code maxCells} cells.
      *
-     * @param maxCells maximum number of cells that can be stored
+     * @param maxCells maximum number of cells
      */
     public Grid(int maxCells) {
-        this.cells = new Cell[maxCells];
-        this.cellCount = 0;
-    }
-
-    /**
-     * Inserts a cell into the grid.
-     *
-     * @param cell cell to insert
-     * @return true if the cell was inserted, false if the grid is full
-     */
-    public boolean insertCell(Cell cell) {
-        if (cellCount >= cells.length) {
-            return false;
+        if (maxCells <= 0) {
+            throw new IllegalArgumentException("maxCells must be > 0");
         }
-        // BUGFIX: use cellCount then increment, do NOT pre-increment
-        cells[cellCount] = cell;
-        cellCount++;
-        return true;
+        this.cells = new Cell[maxCells];
+        this.count = 0;
+    }
+
+    /** Returns the number of cells currently stored. */
+    public int size() {
+        return count;
     }
 
     /**
-     * Returns a copy of all cells currently stored in the grid.
+     * Adds a cell to the grid.
+     *
+     * @param cell cell to add
      */
-    public Cell[] getAllCells() {
-        Cell[] result = new Cell[cellCount];
-        System.arraycopy(cells, 0, result, 0, cellCount);
-        return result;
+    public void addCell(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException("cell must not be null");
+        }
+        if (count >= cells.length) {
+            throw new IllegalStateException("Grid is full");
+        }
+        cells[count++] = cell;
     }
 
     /**
-     * Returns the cell at the given coordinates, or {@code null} if
-     * no cell exists at that position.
+     * Returns the cell at the given coordinates, or null if absent.
+     *
+     * @param coords coordinate lookup key
+     * @return matching cell or null
      */
     public Cell getCell(Coords coords) {
-        if (coords == null) {
-            return null;
-        }
-        for (int i = 0; i < cellCount; i++) {
+        if (coords == null) { return null; }
+        for (int i = 0; i < count; i++) {
             if (cells[i].getCoords().equals(coords)) {
                 return cells[i];
             }
@@ -61,9 +60,15 @@ public class Grid {
     }
 
     /**
-     * Returns the number of cells stored in the grid.
+     * Returns all cells currently in the grid.
+     *
+     * @return a new array of length {@link #size()}
      */
-    public int size() {
-        return cellCount;
+    public Cell[] getAllCells() {
+        Cell[] out = new Cell[count];
+        for (int i = 0; i < count; i++) {
+            out[i] = cells[i];
+        }
+        return out;
     }
 }

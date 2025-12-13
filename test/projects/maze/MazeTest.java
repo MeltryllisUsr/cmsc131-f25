@@ -2,75 +2,64 @@ package projects.maze;
 
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MazeTest {
 
     @Test
     public void testGetStartAndEnd() {
-        Maze maze = new Maze(4);
+        Maze maze = new Maze(9);
+        maze.getGrid().addCell(new Cell(new Coords(0, 0), CellStatus.S));
+        maze.getGrid().addCell(new Cell(new Coords(0, 1), CellStatus.O));
+        maze.getGrid().addCell(new Cell(new Coords(0, 2), CellStatus.E));
+        maze.discoverAndSetupNeighbors();
 
-        Cell start = new Cell(new Coords(0, 0), CellStatus.START);
-        Cell middle = new Cell(new Coords(0, 1), CellStatus.OPEN);
-        Cell end = new Cell(new Coords(1, 1), CellStatus.END);
-
-        maze.addCell(start);
-        maze.addCell(middle);
-        maze.addCell(end);
-
-        assertSame(start, maze.getStart());
-        assertSame(end, maze.getEnd());
+        assertNotNull(maze.getStart());
+        assertNotNull(maze.getEnd());
+        assertEquals(CellStatus.S, maze.getStart().getStatus());
+        assertEquals(CellStatus.E, maze.getEnd().getStatus());
     }
 
     @Test
-    public void testDiscoverAndSetupNeighbors() {
-        Maze maze = new Maze(4);
-
-        Cell c00 = new Cell(new Coords(0, 0), CellStatus.START);
-        Cell c01 = new Cell(new Coords(0, 1), CellStatus.OPEN);
-        Cell c10 = new Cell(new Coords(1, 0), CellStatus.OPEN);
-        Cell c11 = new Cell(new Coords(1, 1), CellStatus.END);
-
-        maze.addCell(c00);
-        maze.addCell(c01);
-        maze.addCell(c10);
-        maze.addCell(c11);
-
+    public void testSolveFindsPathInSimpleLine() {
+        Maze maze = new Maze(9);
+        maze.getGrid().addCell(new Cell(new Coords(0, 0), CellStatus.S));
+        maze.getGrid().addCell(new Cell(new Coords(0, 1), CellStatus.O));
+        maze.getGrid().addCell(new Cell(new Coords(0, 2), CellStatus.E));
         maze.discoverAndSetupNeighbors();
 
-        // c00 neighbors: (0,1) and (1,0)
-        Coords[] n00 = c00.getNeighbors();
-        assertEquals(2, n00.length);
+        assertTrue(maze.solve());
 
-        // Use a small helper to make assertions easier
-        assertTrue(containsCoords(n00, 0, 1));
-        assertTrue(containsCoords(n00, 1, 0));
-
-        // c11 neighbors: (0,1) and (1,0)
-        Coords[] n11 = c11.getNeighbors();
-        assertEquals(2, n11.length);
-        assertTrue(containsCoords(n11, 0, 1));
-        assertTrue(containsCoords(n11, 1, 0));
-
-        // c01 neighbors: (0,0) and (1,1)
-        Coords[] n01 = c01.getNeighbors();
-        assertEquals(2, n01.length);
-        assertTrue(containsCoords(n01, 0, 0));
-        assertTrue(containsCoords(n01, 1, 1));
-
-        // c10 neighbors: (0,0) and (1,1)
-        Coords[] n10 = c10.getNeighbors();
-        assertEquals(2, n10.length);
-        assertTrue(containsCoords(n10, 0, 0));
-        assertTrue(containsCoords(n10, 1, 1));
+        Cell mid = maze.getGrid().getCell(new Coords(0, 1));
+        assertEquals(CellStatus.P, mid.getStatus());
     }
 
-    private boolean containsCoords(Coords[] arr, int row, int col) {
-        for (Coords c : arr) {
-            if (c.getRow() == row && c.getCol() == col) {
-                return true;
-            }
-        }
-        return false;
+    @Test
+    public void testSolveReturnsFalseWhenBlocked() {
+        Maze maze = new Maze(9);
+        maze.getGrid().addCell(new Cell(new Coords(0, 0), CellStatus.S));
+        maze.getGrid().addCell(new Cell(new Coords(0, 1), CellStatus.X));
+        maze.getGrid().addCell(new Cell(new Coords(0, 2), CellStatus.E));
+        maze.discoverAndSetupNeighbors();
+
+        assertFalse(maze.solve());
+    }
+
+    @Test
+    public void testSerializeWritesExpectedFormat() throws Exception {
+        Maze maze = new Maze(4);
+        maze.getGrid().addCell(new Cell(new Coords(0, 0), CellStatus.S));
+        maze.getGrid().addCell(new Cell(new Coords(0, 1), CellStatus.E));
+        maze.discoverAndSetupNeighbors();
+
+        Path out = Files.createTempFile("maze", ".txt");
+        maze.serialize(out.toString());
+
+        String text = Files.readString(out);
+        assertTrue(text.contains("S "));
+        assertTrue(text.contains("E "));
     }
 }

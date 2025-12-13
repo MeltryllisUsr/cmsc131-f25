@@ -1,18 +1,18 @@
 package projects.maze;
 
 /**
- * Immutable row/column coordinate pair in the maze grid.
+ * Immutable coordinate pair (row, column) for grid addressing.
  */
-public class Coords {
+public final class Coords {
 
     private final int row;
     private final int col;
 
     /**
-     * Constructs a coordinate with the given row and column.
+     * Constructs a coordinate pair.
      *
-     * @param row zero-based row index
-     * @param col zero-based column index
+     * @param row row index (0-based)
+     * @param col column index (0-based)
      */
     public Coords(int row, int col) {
         this.row = row;
@@ -29,20 +29,20 @@ public class Coords {
         return col;
     }
 
-    /**
-     * Compares this coordinate to another {@link Coords}.
-     */
-    public boolean equals(Coords other) {
-        if (other == null) {
-            return false;
-        }
-        return this.row == other.row && this.col == other.col;
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Coords)) { return false; }
+        Coords o = (Coords) other;
+        return row == o.row && col == o.col;
     }
 
-    /**
-     * Simple hash-code based on row and column.
-     */
+    @Override
     public int hashCode() {
-        return row * 31 + col;
+        return 31 * row + col;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + row + "," + col + ")";
     }
 }

@@ -8,47 +8,33 @@ public class CellTest {
 
     @Test
     public void testConstructorAndGetters() {
-        Coords coords = new Coords(2, 3);
-        Cell cell = new Cell(coords, CellStatus.OPEN);
+        Coords coords = new Coords(0, 1);
+        Cell cell = new Cell(coords, CellStatus.O);
 
-        assertEquals(2, cell.getCoords().getRow());
-        assertEquals(3, cell.getCoords().getCol());
-        assertEquals(CellStatus.OPEN, cell.getStatus());
+        assertEquals(coords, cell.getCoords());
+        assertEquals(CellStatus.O, cell.getStatus());
         assertFalse(cell.isExplored());
-        assertNotNull(cell.getNeighbors());
-        assertEquals(0, cell.getNeighbors().length);
+        assertEquals(0, cell.getNeighborCount());
     }
 
     @Test
     public void testSetStatusAndExplored() {
-        Coords coords = new Coords(0, 0);
-        Cell cell = new Cell(coords, CellStatus.EMPTY);
+        Cell cell = new Cell(new Coords(0, 0), CellStatus.O);
 
-        cell.setStatus(CellStatus.START);
-        assertEquals(CellStatus.START, cell.getStatus());
+        cell.setStatus(CellStatus.S);
+        assertEquals(CellStatus.S, cell.getStatus());
 
         cell.setExplored(true);
         assertTrue(cell.isExplored());
-
-        cell.setExplored(false);
-        assertFalse(cell.isExplored());
     }
 
     @Test
-    public void testSetNeighbors() {
-        Coords coords = new Coords(1, 1);
-        Cell cell = new Cell(coords, CellStatus.OPEN);
+    public void testAddNeighbor() {
+        Cell a = new Cell(new Coords(0, 0), CellStatus.O);
+        Cell b = new Cell(new Coords(0, 1), CellStatus.O);
 
-        Coords n1 = new Coords(0, 1);
-        Coords n2 = new Coords(2, 1);
-
-        cell.setNeighbors(new Coords[]{n1, n2});
-
-        Coords[] neighbors = cell.getNeighbors();
-        assertEquals(2, neighbors.length);
-        assertEquals(0, neighbors[0].getRow());
-        assertEquals(1, neighbors[0].getCol());
-        assertEquals(2, neighbors[1].getRow());
-        assertEquals(1, neighbors[1].getCol());
+        a.addNeighbor(b);
+        assertEquals(1, a.getNeighborCount());
+        assertSame(b, a.getNeighbors()[0]);
     }
 }

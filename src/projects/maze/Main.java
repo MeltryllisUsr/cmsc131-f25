@@ -1,15 +1,21 @@
 package projects.maze;
 
+/**
+ * Application entry point for Maze phase 1/2.
+ */
 public class Main {
 
-    static void phase1() {
-        Maze maze = MazeReader.load( "data/sample_maze.txt" );
-        System.out.println("Maze successfully loaded!");
-        maze.serialize("data/sample_maze_out.txt");
-    }
-
+    /**
+     * Runs the maze loader, solver, and serializer.
+     *
+     * @param args command-line arguments (expects input filename)
+     */
     public static void main(String[] args) {
-        phase1();
-    }
+        Maze maze = MazeReader.load("sample_maze.txt");
 
+        // Phase 2: attempt solve before serializing
+        maze.solve();
+
+        maze.serialize("sample_maze_output.txt");
+    }
 }
